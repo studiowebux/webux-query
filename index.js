@@ -49,19 +49,25 @@ module.exports = (blacklist, defaultSelect) => {
       );
     }
 
-    const parsedQuery = ParseQuery(req.query);
+    try {
+      const parsedQuery = ParseQuery(req.query);
 
-    // create custom projection
-    if (parsedQuery.projection) {
-      parsedQuery.projection = Trim(
-        parsedQuery.projection,
-        blacklist,
-        defaultSelect
+      // create custom projection
+      if (parsedQuery.projection) {
+        parsedQuery.projection = Trim(
+          parsedQuery.projection,
+          blacklist,
+          defaultSelect
+        );
+      } else {
+        parsedQuery.projection = defaultSelect; // return the default select
+      }
+      req.query = parsedQuery; // overwrite the req.query and continue...
+      return next();
+    } catch (e) {
+      return next(
+        errorHandler(400, "INVALID_REQUEST", {}, "The select is malformed. Please check the documentation.")
       );
-    } else {
-      parsedQuery.projection = defaultSelect; // return the default select
     }
-    req.query = parsedQuery; // overwrite the req.query and continue...
-    return next();
   };
 };
