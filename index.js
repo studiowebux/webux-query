@@ -33,7 +33,7 @@ module.exports = (blacklist, defaultSelect) => {
     filter.addWords(blacklist);
 
     // Nothing to do
-    if (!req.query) {
+    if (!req.query || !blacklist || blacklist.length === 0) {
       return next();
     }
 
@@ -66,7 +66,12 @@ module.exports = (blacklist, defaultSelect) => {
       return next();
     } catch (e) {
       return next(
-        errorHandler(400, "INVALID_REQUEST", {}, "The select is malformed. Please check the documentation.")
+        errorHandler(
+          400,
+          "INVALID_REQUEST",
+          {},
+          "The select is malformed. Please check the documentation."
+        )
       );
     }
   };
