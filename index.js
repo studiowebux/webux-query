@@ -28,28 +28,21 @@ const { errorHandler } = require("webux-errorhandler");
  */
 module.exports = (blacklist, defaultSelect) => {
   return (req, res, next) => {
-    // Define words blacklisted
-    // When a user request specific information, we want to protect the sensitive datas.
-    filter.addWords(blacklist);
-
-    // Nothing to do
-    if (!req.query || !blacklist || blacklist.length === 0) {
-      return next();
-    }
-
-    // if it contains blacklisted elements
-    if (req.query && filter.blacklisted(JSON.stringify(req.query))) {
-      return next(
-        errorHandler(
-          400,
-          "INVALID_REQUEST",
-          {},
-          "Query may contains blacklisted items."
-        )
-      );
-    }
-
     try {
+      // Nothing to do
+      if (!req.query) {
+        return next();
+      }
+      
+      // Define words blacklisted
+      // When a user request specific information, we want to protect the sensitive datas.
+      if (blacklist && blacklist.length > 0) {
+        filter.addWords(blacklist);
+        if (filter.blacklisted(JSON.stringify(req.query))) {
+          throw new Error("Query may contains blacklisted items.");
+        }
+      }
+
       const parsedQuery = ParseQuery(req.query);
 
       // create custom projection
@@ -65,14 +58,7 @@ module.exports = (blacklist, defaultSelect) => {
       req.query = parsedQuery; // overwrite the req.query and continue...
       return next();
     } catch (e) {
-      return next(
-        errorHandler(
-          400,
-          "INVALID_REQUEST",
-          {},
-          "The select is malformed. Please check the documentation."
-        )
-      );
+      return next(errorHandler(400, "INVALID_REQUEST", {}, e));
     }
   };
 };
