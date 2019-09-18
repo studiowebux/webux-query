@@ -1,6 +1,6 @@
 {
   "name": "webux-query",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "trim the query parameters",
   "main": "index.js",
   "scripts": {
