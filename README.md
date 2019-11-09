@@ -5,7 +5,7 @@ This module is a wrapper around mongo-qp to parse and validate query parameters.
 ## Installation
 
 ```bash
-npm i --save webux-query
+npm i --save @studiowebux/query
 ```
 
 ## Usage

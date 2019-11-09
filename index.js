@@ -18,7 +18,7 @@ const Trim = require("./utils/trim");
 const parser = require("mongo-qp");
 const ParseQuery = parser.ParseQuery;
 const filter = require("wordfilter");
-const { errorHandler } = require("webux-errorhandler");
+const { errorHandler } = require("@studiowebux/errorhandler");
 
 /**
  * check if the query parameters are safe.
